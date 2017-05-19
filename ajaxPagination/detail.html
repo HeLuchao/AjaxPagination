@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        html, body{
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            font-family: "Microsoft Sans Serif";
+            font-size: 14px;
+            color: #000;
+        }
+        ul, li{
+            list-style: none;
+        }
+        input{
+            outline: none;
+        }
+        .box{
+            width: 800px;
+            padding: 20px;
+            border: 3px solid lightgreen;
+            margin: 50px auto;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .header, .userList {
+            width: 800px;
+            height: 50px;
+            background: lightblue;
+            border-radius: 5px;
+        }
+        .userList{
+            background: none;
+        }
+        .header span, .userList  span{
+            float: left;
+            width: 25%;
+            height: 50px;
+            text-align: center;
+            line-height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2 class="header">
+            <span>学号</span><span>姓名</span><span>性别</span><span>成绩</span>
+        </h2>
+        <div class="userList" id="userList">
+            <span>1</span><span>陈超</span><span>男</span><span>100</span>
+        </div>
+    </div>
+</body>
+</html>
+<script src="js/ajax.js"></script>
+<script>
+//
+    var detailModel = (function () {
+
+        var userList = document.getElementById("userList");
+        //解析url
+        function queryString(url){
+            var reg = /([^?#&=]+)=([^?#&=]+)/g;
+            var obj = {};
+            url.replace(reg,function (){
+                obj[arguments[1]]=arguments[2];
+            });
+            return obj;
+        }
+
+
+        //绑定html
+        function bindHTML(userInfo) {
+            var str = '';
+            //绑定用户列表区域
+            str +='<span>' + userInfo.id + '</span> <span>' + userInfo.name + '</span> <span>' + (userInfo.sex ? "女" : "男") + '</span> <span>' + userInfo.score + '</span> ';
+            userList.innerHTML = str;
+        }
+
+        //发送ajax请求绑定数据
+        function sendAjax() {
+            ajax({
+                type: "get",
+                url:"/getUserInfo?id="+queryString(window.location.href).id,
+                async: true,
+                data: null,
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    bindHTML(data.data);
+                }
+            });
+        }
+
+        function init() {
+            sendAjax();
+        }
+
+
+        return {
+            init:init
+        }
+
+    })();
+
+
+detailModel.init();
+
+
+
+
+
+</script>
